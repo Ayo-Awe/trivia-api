@@ -42,11 +42,18 @@ async function getCategoryQuestions(categoryId) {
   if (typeof categoryId !== "string")
     throw new TypeError("id must be of type string");
 
+  // Check if category exists
+  const category = await Category.exists({ _id: categoryId });
+
+  // Returning null instead of throwing an error allows for easy error handling
+  if (!category) return null;
+
   // Get category form database
   const question = await Question.find({ category: categoryId }).select(
     "description category"
   );
 
+  // If no questions match, it returns and empty array []
   return question;
 }
 
