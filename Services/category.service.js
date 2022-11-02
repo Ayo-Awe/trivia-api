@@ -37,9 +37,10 @@ async function createCategory(name) {
 
 async function getCategoryQuestions(categoryId) {
   // Validate input
-  if (!id) throw new ValueError("id is required");
+  if (!categoryId) throw new ValueError("id is required");
 
-  if (typeof id !== "string") throw new TypeError("id must be of type string");
+  if (typeof categoryId !== "string")
+    throw new TypeError("id must be of type string");
 
   // Get category form database
   const question = await Question.find({ category: categoryId }).select(
