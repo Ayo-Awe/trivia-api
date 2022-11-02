@@ -3,6 +3,8 @@ const {
   createCategory,
   getCategoryQuestions,
   getCategoryById,
+  deleteCategory,
+  editCategory,
 } = require("../Services/category.service");
 
 const { handleAsync } = require("../utils/helpers");
@@ -46,14 +48,47 @@ const handleGetQuestionsByCategory = handleAsync(async (req, res) => {
   const questions = await getCategoryQuestions(categoryId);
 
   if (!questions)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: `category with id:${categoryId} not found`,
-      });
+    return res.status(404).json({
+      success: false,
+      message: `category with id:${categoryId} not found`,
+    });
 
   res.status(200).json({ success: true, questions });
+});
+
+const handleDeleteCategory = handleAsync(async (req, res) => {
+  const { categoryId } = req.params;
+
+  const category = await deleteCategory(categoryId);
+
+  if (!category)
+    return res.status(404).json({
+      success: false,
+      message: `category with id:${categoryId} not found`,
+    });
+
+  res.status(200).json({ success: true, category });
+});
+
+const handleEditCategory = handleAsync(async (req, res) => {
+  const { categoryId } = req.params;
+  const { name } = req.body;
+
+  if (!name)
+    return res.status(400).json({
+      success: false,
+      message: "name is required",
+    });
+
+  const category = await editCategory(categoryId, name);
+
+  if (!category)
+    return res.status(404).json({
+      success: false,
+      message: `category with id:${categoryId} not found`,
+    });
+
+  res.status(200).json({ success: true, category });
 });
 
 module.exports = {
@@ -61,4 +96,6 @@ module.exports = {
   handleGetCategories,
   handleGetCategoryById,
   handleGetQuestionsByCategory,
+  handleEditCategory,
+  handleDeleteCategory,
 };

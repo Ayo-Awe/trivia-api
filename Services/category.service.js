@@ -21,6 +21,33 @@ async function getCategoryById(id) {
   return category;
 }
 
+async function editCategory(id, name) {
+  // Validate input
+  if (!id && !name) throw new ValueError("id and name are required");
+
+  if (typeof id !== "string" || typeof name !== "string")
+    throw new TypeError("id and name must be of type string");
+
+  // Get category form database
+  const category = await Category.findByIdAndUpdate(id, { name }, { new: true })
+    .select("name")
+    .lean();
+
+  return category;
+}
+
+async function deleteCategory(id) {
+  // Validate input
+  if (!id) throw new ValueError("id is required");
+
+  if (typeof id !== "string") throw new TypeError("id must be of type string");
+
+  // Get category form database
+  const category = await Category.findByIdAndDelete(id).lean().select("name");
+
+  return category;
+}
+
 async function createCategory(name) {
   // Validate input
   if (!name) throw new ValueError("name is required");
@@ -62,4 +89,6 @@ module.exports = {
   getCategoryById,
   getCategoryQuestions,
   createCategory,
+  deleteCategory,
+  editCategory,
 };
