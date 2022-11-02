@@ -29,9 +29,16 @@ async function editCategory(id, name) {
     throw new TypeError("id and name must be of type string");
 
   // Get category form database
-  const category = await Category.findByIdAndUpdate(id, { name }, { new: true })
-    .select("name")
-    .lean();
+  const category = await Category.findById(id).select("name");
+
+  // if category doesn't exist return null
+  if (!category) return null;
+
+  // Update category name
+  category.name = name;
+
+  // Save updates to the database
+  await category.save({ timestamps: false });
 
   return category;
 }
